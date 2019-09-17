@@ -9,6 +9,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.InetSocketAddress;
 import java.util.Collections;
 import java.util.List;
 
@@ -57,8 +58,11 @@ public class NetPrinterAdapter implements PrinterAdapter {
             return;
         }
 
+
+
         try{
-            Socket socket = new Socket(netPrinterDeviceId.getHost(), netPrinterDeviceId.getPort());
+            Socket socket = new Socket();
+            socket.connect(new InetSocketAddress(netPrinterDeviceId.getHost(), netPrinterDeviceId.getPort()), 2000);
             if(socket.isConnected()) {
                 closeConnectionIfExists();
                 this.mSocket = socket;

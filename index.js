@@ -32,6 +32,9 @@ var billTo64Buffer = text => {
   return buffer.toString("base64");
 };
 
+const timeout = ms =>
+  new Promise((resolve, reject) => setTimeout(reject, ms, { timeout: true }));
+
 export const USBPrinter = {
   init: () =>
     new Promise((resolve, reject) =>
@@ -125,12 +128,9 @@ export const NetPrinter = {
       RNNetPrinter.init(() => resolve(), error => reject(error))
     ),
 
-  connectPrinter: (host, port, timeout) =>
+  connectPrinter: (host, port) =>
     new Promise((resolve, reject) => {
-      setTimeout(() => {
-        reject("Connection timeout");
-      }, timeout);
-      return RNNetPrinter.connectPrinter(
+      RNNetPrinter.connectPrinter(
         host,
         port,
         printer => resolve(printer),

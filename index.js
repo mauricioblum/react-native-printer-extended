@@ -125,15 +125,18 @@ export const NetPrinter = {
       RNNetPrinter.init(() => resolve(), error => reject(error))
     ),
 
-  connectPrinter: (host, port) =>
-    new Promise((resolve, reject) =>
-      RNNetPrinter.connectPrinter(
+  connectPrinter: (host, port, timeout) =>
+    new Promise((resolve, reject) => {
+      setTimeout(() => {
+        reject("Connection timeout");
+      }, timeout);
+      return RNNetPrinter.connectPrinter(
         host,
         port,
         printer => resolve(printer),
         error => reject(error)
-      )
-    ),
+      );
+    }),
 
   closeConn: () =>
     new Promise((resolve, reject) => {

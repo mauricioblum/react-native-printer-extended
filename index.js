@@ -1,96 +1,156 @@
-import React, { NativeModules } from 'react-native';
+import React, { NativeModules } from "react-native";
 
-import EPToolkit from 'escpos-printer-toolkit';
+import EPToolkit from "escpos-printer-toolkit";
 
 var RNUSBPrinter = NativeModules.RNUSBPrinter;
 var RNBLEPrinter = NativeModules.RNBLEPrinter;
 var RNNetPrinter = NativeModules.RNNetPrinter;
 
-
-var textTo64Buffer = (text) => {
+var textTo64Buffer = text => {
   let options = {
-    beep: false, 
-    cut: false, 
+    beep: false,
+    cut: false,
     tailingLine: false,
-    encoding: 'GBK'
-  }
-  const buffer = EPToolkit.exchange_text(text, options)
-  return buffer.toString('base64');
-}
-
-var billTo64Buffer = (text) => {
-  let options = {
-    beep: true, 
-    cut: true, 
-    encoding: 'GBK',
-    tailingLine: true
-  }
-  const buffer = EPToolkit.exchange_text(text, options)
+    encoding: "GBK"
+  };
+  const buffer = EPToolkit.exchange_text(text, options);
   return buffer.toString("base64");
-}
+};
+
+var textTo64Raw = text => {
+  return text.toString("base64");
+};
+
+var billTo64Buffer = text => {
+  let options = {
+    beep: true,
+    cut: true,
+    encoding: "GBK",
+    tailingLine: true
+  };
+  const buffer = EPToolkit.exchange_text(text, options);
+  return buffer.toString("base64");
+};
 
 export const USBPrinter = {
-  init: () => 
-    new Promise((resolve, reject) => 
-      RNUSBPrinter.init(() => resolve(), (error) => reject(error))),
-  
-  getDeviceList: () => 
-    new Promise((resolve, reject) => 
-      RNUSBPrinter.getDeviceList((printers) => resolve(printers), (error) => reject(error))),
+  init: () =>
+    new Promise((resolve, reject) =>
+      RNUSBPrinter.init(() => resolve(), error => reject(error))
+    ),
 
-  connectPrinter: (vendorId, productId) => 
-    new Promise((resolve, reject) => 
-      RNUSBPrinter.connectPrinter(vendorId, productId, (printer) => resolve(printer), (error) => reject(error))),
+  getDeviceList: () =>
+    new Promise((resolve, reject) =>
+      RNUSBPrinter.getDeviceList(
+        printers => resolve(printers),
+        error => reject(error)
+      )
+    ),
 
-  closeConn: () => new Promise((resolve, reject) => {
-    RNUSBPrinter.closeConn();
-    resolve();
-  }),
+  connectPrinter: (vendorId, productId) =>
+    new Promise((resolve, reject) =>
+      RNUSBPrinter.connectPrinter(
+        vendorId,
+        productId,
+        printer => resolve(printer),
+        error => reject(error)
+      )
+    ),
 
-  printText: (text) => RNUSBPrinter.printRawData(textTo64Buffer(text), (error) => console.warn(error)),
+  closeConn: () =>
+    new Promise((resolve, reject) => {
+      RNUSBPrinter.closeConn();
+      resolve();
+    }),
 
-  printBill: (text) => RNUSBPrinter.printRawData(billTo64Buffer(text), (error) => console.warn(error)),
-}
+  printRaw: text =>
+    RNNetPrinter.printRawData(textTo64Raw(text), error => console.warn(error)),
 
+  printText: text =>
+    RNUSBPrinter.printRawData(textTo64Buffer(text), error =>
+      console.warn(error)
+    ),
+
+  printBill: text =>
+    RNUSBPrinter.printRawData(billTo64Buffer(text), error =>
+      console.warn(error)
+    )
+};
 
 export const BLEPrinter = {
-  init:  () => 
-    new Promise((resolve, reject) => 
-      RNBLEPrinter.init(() => resolve(), (error) => reject(error))),
-  
-  getDeviceList: () => 
-    new Promise((resolve, reject) => 
-      RNBLEPrinter.getDeviceList((printers) => resolve(printers), (error) => reject(error))),
+  init: () =>
+    new Promise((resolve, reject) =>
+      RNBLEPrinter.init(() => resolve(), error => reject(error))
+    ),
 
-  connectPrinter: (inner_mac_address) => 
-    new Promise((resolve, reject) => 
-      RNBLEPrinter.connectPrinter(inner_mac_address, (printer) => resolve(printer), (error) => reject(error))),
+  getDeviceList: () =>
+    new Promise((resolve, reject) =>
+      RNBLEPrinter.getDeviceList(
+        printers => resolve(printers),
+        error => reject(error)
+      )
+    ),
 
-  closeConn: () => new Promise((resolve, reject) => {
-    RNBLEPrinter.closeConn();
-    resolve();
-  }),
+  connectPrinter: inner_mac_address =>
+    new Promise((resolve, reject) =>
+      RNBLEPrinter.connectPrinter(
+        inner_mac_address,
+        printer => resolve(printer),
+        error => reject(error)
+      )
+    ),
 
-  printText: (text) => RNBLEPrinter.printRawData(textTo64Buffer(text), (error) => console.warn(error)),
+  closeConn: () =>
+    new Promise((resolve, reject) => {
+      RNBLEPrinter.closeConn();
+      resolve();
+    }),
 
-  printBill: (text) => RNBLEPrinter.printRawData(billTo64Buffer(text), (error) => console.warn(error)), 
-}
+  printRaw: text =>
+    RNNetPrinter.printRawData(textTo64Raw(text), error => console.warn(error)),
+
+  printText: text =>
+    RNBLEPrinter.printRawData(textTo64Buffer(text), error =>
+      console.warn(error)
+    ),
+
+  printBill: text =>
+    RNBLEPrinter.printRawData(billTo64Buffer(text), error =>
+      console.warn(error)
+    )
+};
 
 export const NetPrinter = {
-  init:  () => 
-    new Promise((resolve, reject) => 
-      RNNetPrinter.init(() => resolve(), (error) => reject(error))),
-  
-  connectPrinter: (host, port) => 
-    new Promise((resolve, reject) => 
-      RNNetPrinter.connectPrinter(host, port, (printer) => resolve(printer), (error) => reject(error))),
+  init: () =>
+    new Promise((resolve, reject) =>
+      RNNetPrinter.init(() => resolve(), error => reject(error))
+    ),
 
-  closeConn: () => new Promise((resolve, reject) => {
-    RNNetPrinter.closeConn();
-    resolve();
-  }),
+  connectPrinter: (host, port) =>
+    new Promise((resolve, reject) =>
+      RNNetPrinter.connectPrinter(
+        host,
+        port,
+        printer => resolve(printer),
+        error => reject(error)
+      )
+    ),
 
-  printText: (text) => RNNetPrinter.printRawData(textTo64Buffer(text), (error) => console.warn(error)),
+  closeConn: () =>
+    new Promise((resolve, reject) => {
+      RNNetPrinter.closeConn();
+      resolve();
+    }),
 
-  printBill: (text) => RNNetPrinter.printRawData(billTo64Buffer(text), (error) => console.warn(error)), 
-}
+  printRaw: text =>
+    RNNetPrinter.printRawData(textTo64Raw(text), error => console.warn(error)),
+
+  printText: text =>
+    RNNetPrinter.printRawData(textTo64Buffer(text), error =>
+      console.warn(error)
+    ),
+
+  printBill: text =>
+    RNNetPrinter.printRawData(billTo64Buffer(text), error =>
+      console.warn(error)
+    )
+};

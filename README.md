@@ -1,4 +1,4 @@
-# react-native-printer
+# react-native-printer-extended
 
 A React Native Library to support USB/BLE/Net printer for Android platform
 
@@ -21,7 +21,11 @@ react-native link react-native-printer-extended
 ## Usage
 
 ```javascript
-import { USBPrinter, NetPrinter, BLEPrinter } from "react-native-printer";
+import {
+  USBPrinter,
+  NetPrinter,
+  BLEPrinter
+} from "react-native-printer-extended";
 
 USBPrinter.printText("<C>这是一个测试打印</C>");
 USBPrinter.printBill("<C>这是一段打印测试文字</C>");

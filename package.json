@@ -1,6 +1,6 @@
 {
   "name": "react-native-printer-extended",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A React Native Library to support USB/BLE/Net printer for Android platform ",
   "main": "index.js",
   "scripts": {

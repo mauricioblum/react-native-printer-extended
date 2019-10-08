@@ -62,7 +62,7 @@ public class NetPrinterAdapter implements PrinterAdapter {
 
         try{
             Socket socket = new Socket();
-            socket.connect(new InetSocketAddress(netPrinterDeviceId.getHost(), netPrinterDeviceId.getPort()), 500);
+            socket.connect(new InetSocketAddress(netPrinterDeviceId.getHost(), netPrinterDeviceId.getPort()), 100);
             if(socket.isConnected()) {
                 closeConnectionIfExists();
                 this.mSocket = socket;
